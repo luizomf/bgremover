@@ -1,77 +1,137 @@
-# BGRemover (Rembg)
+# BGRemover - Remove background from images using rembg (CLI)
 
-```sh
-# `llvmlite`: biblioteca que serve como uma "ponte" entre o Python e o LLVM.
-# LLVM é uma tecnologia de compilador de baixo nível.
-# O `llvmlite` permite que o Numba transforme seu código Python em código de
-# máquina super rápido, usando as capacidades do LLVM.
-# Por que pode dar problema: Ele precisa compilar partes para se integrar ao
-# seu sistema operacional e arquitetura, o que pode exigir ferramentas de
-# desenvolvimento específicas (como o Microsoft Visual C++ Redistribuível).
+**BGRemover** is a command-line tool to remove image backgrounds using [rembg](https://github.com/danielgatis/rembg) and powerful AI models like `u2net`, `birefnet`, and others.
 
-# `numba`:
-# É um compilador Just-In-Time (JIT) para Python.
-# Ele "traduz" seções do seu código Python (especialmente aquelas que lidam com
-# números e cálculos pesados) para código de máquina nativo na hora em que o
-# programa está rodando. Isso torna o código Python tão rápido quanto C ou
-# Fortran em muitas situações!
-# O `rembg` (ou alguma de suas dependências internas) pode usar o Numba para
-# acelerar operações que envolvem processamento de imagens, como os algoritmos
-# de rede neural.
-# Assim como o `llvmlite` (do qual ele depende), o Numba também exige que o
-# sistema tenha um ambiente de compilação adequado para gerar código otimizado.
+- 🖼️ Process individual images or entire folders
+- ⚙️ Choose among multiple rembg-compatible models
+- 🧠 Built with Python 3.13+, argparse, and modern packaging
+- 💻 Easy to install with [`uv`](https://github.com/astral-sh/uv)
+- 🔒 Fully local, no cloud dependencies after downloading the models
 
-# `onnxruntime`:
-# É um "executor" (runtime) de modelos de Machine Learning no formato ONNX
-# Permite que você use modelos de IA (como os modelos que o `rembg` usa para
-# identificar o fundo) sem precisar instalar frameworks de IA gigantes e
-# complexos como PyTorch ou TensorFlow. Ele otimiza a execução desses modelos
-# para serem rápidos e eficientes.
-# O `rembg` utiliza modelos de rede neural no formato ONNX para realizar a
-# remoção de fundo. O `onnxruntime` é quem de fato carrega e executa esses
-# modelos.
+---
 
-# Se você estiver no Windows, é FUNDAMENTAL ter o
-# Microsoft Visual C++ Redistribuível instalado.
-# Este pacote fornece bibliotecas essenciais que programas compilados em C++
-# (como partes de llvmlite, numba e onnxruntime) precisam para rodar.
-# Site para download (URL curta para facilitar): https://rb.gy/c4deeu
-# ---
+## 🚀 Installation
 
-# --- Instalação com `uv`: ---
-# Instalação base do `pillow` (para manipular imagens)
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/luizomf/bgremover.git
+cd bgremover
+uv venv
+source .venv/bin/activate  # or .venv\Scripts\activate on Windows
+uv sync
+```
+
+### 2. Manual installation (if needed)
+
+Install dependencies safely using `--no-build-package` to avoid native compilation issues:
+
+```bash
 uv add pillow
-
-# Instalação de `llvmlite` e `numba` com `--no-build-package`:
-# Usamos `--no-build-package` aqui para evitar que o `uv` tente recompilar esses
-# pacotes do zero, o que pode levar a erros de compilação se as ferramentas
-# certas não estiverem presentes no sistema.
-# Em vez disso, o `uv` tentará baixar uma versão pré-compilada (wheel) que
-# seja compatível com seu sistema.
 uv add --no-build-package llvmlite llvmlite
 uv add --no-build-package numba numba
-
-# Instalação do `rembg` com suporte a CPU e `--no-build-package`:
-# O `rembg[cpu]` garante que estamos instalando a versão otimizada para CPUs
-# (sem precisar de GPU).
-# Novamente, `--no-build-package` para tentar usar uma versão pré-compilada.
 uv add "rembg[cpu]" --no-build-package numba
+```
 
-# --- Verificação da Instalação (Para confirmar que tudo está OK): ---
-# Ver detalhes da instalação de um pacote (versão, onde está instalado, etc.):
+> 💡 On Windows, make sure you have [Microsoft Visual C++ Redistributable](https://rb.gy/c4deeu) installed.
+
+---
+
+## 🧪 Verifying Installation
+
+```bash
 uv pip show llvmlite
 uv pip show numba
-
-# Para testar se o pacote está importável e ver sua versão via Python:
 uv run python -c "import llvmlite; print(llvmlite.__version__)"
 uv run python -c "import numba; print(numba.__version__)"
-# Se esses comandos não retornarem erros e mostrarem as versões, é um bom sinal!
-
-# Onde os Modelos de IA são Armazenados:
-# Os modelos de rede neural (aqueles arquivos que o rembg usa) são baixados
-# automaticamente na primeira vez que você os utiliza. Eles ficam salvos em:
-# Windows: C:\Users\SEU_USUARIO\.u2net
-# Linux/macOS: ~/.u2net
-# Você pode removê-los manualmente se precisar liberar espaço, mas eles serão
-# baixados novamente se você rodar o script e o modelo não for encontrado.
 ```
+
+---
+
+## 🧠 Usage
+
+### CLI commands
+
+```bash
+bgremover -h
+```
+
+```text
+usage: bgremover [-h] {one,many} ...
+
+subcommands:
+  one       Remove background from a single image
+  many      Remove background from all images in a directory
+```
+
+### Examples
+
+#### One image:
+
+```bash
+bgremover one -i ./images/photo.png -o ./out/
+```
+
+#### Multiple images:
+
+```bash
+bgremover many -i ./images/ -o ./out/ -m isnet-anime
+```
+
+---
+
+## 🎨 Supported Models
+
+You can use any rembg-compatible model:
+
+```text
+u2net, u2netp, u2net_human_seg, u2net_cloth_seg, u2net_custom, silueta,
+isnet-general-use, isnet-anime, sam, birefnet-general, birefnet-general-lite,
+birefnet-portrait, birefnet-dis, birefnet-hrsod, birefnet-cod,
+birefnet-massive, ben2-base
+```
+
+---
+
+## 🧾 Where are AI models stored?
+
+- **Windows:** `C:\Users\YOUR_USER\.u2net`
+- **Linux/macOS:** `~/.u2net`
+
+---
+
+## 🧰 Project structure
+
+```text
+src/bgremover/
+├── cli.py              # CLI entrypoint with argparse
+├── runners.py          # Dispatch map for subcommands
+├── rembg_wrapper.py    # Model list, remove_bg(), etc.
+├── constants.py        # (optional) allowed_extensions, etc.
+```
+
+---
+
+## 🧠 Developer mode
+
+You can run the CLI locally:
+
+```bash
+uv run bgremover one -i ./images/photo.jpg -o ./out/
+```
+
+---
+
+## 👨‍🏫 Author
+
+Created by [Luiz Otávio Miranda](https://www.otaviomiranda.com.br)
+📺 [YouTube @OtavioMiranda](https://www.youtube.com/@OtavioMiranda)
+🐙 [GitHub @luizomf](https://github.com/luizomf)
+
+---
+
+## 📄 License
+
+MIT
+
+---
