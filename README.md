@@ -1,3 +1,5 @@
+# BGRemover (Rembg)
+
 ```sh
 # `llvmlite`: biblioteca que serve como uma "ponte" entre o Python e o LLVM.
 # LLVM é uma tecnologia de compilador de baixo nível.
