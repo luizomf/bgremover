@@ -2,7 +2,7 @@ import argparse
 from pathlib import Path
 
 from bgremover.rembg_wrapper import models
-from bgremover.runners import runners
+from bgremover.runners import COMMANDS
 
 
 def run_with_args() -> None:
@@ -55,7 +55,7 @@ def run_with_args() -> None:
     process_many_parser.set_defaults(command="process_images")
 
     args = parser.parse_args()
-    runners[args.command](args.input, args.output, args.model)
+    COMMANDS[args.command](args.input, args.output, args.model)
 
 
 def str_to_path_or_fail(path_txt: str) -> Path:

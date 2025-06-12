@@ -29,7 +29,7 @@ def process_images(
         print(f"🔴 Not a directory: {input_dir}")
         return
 
-    files = input_dir.rglob("*.*")
+    files = list(input_dir.rglob("*.*"))
     if not files:
         print(f"⚠️ No images found: {input_dir}")
         return
@@ -38,4 +38,7 @@ def process_images(
         process_image(img_path, output_dir, model)
 
 
-runners = {"process_image": process_image, "process_images": process_images}
+COMMANDS = {
+    "process_image": process_image,
+    "process_images": process_images,
+}
