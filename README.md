@@ -124,8 +124,8 @@ uv run bgremover one -i ./images/photo.jpg -o ./out/
 
 ## 👨‍🏫 Author
 
-Created by [Luiz Otávio Miranda](https://www.otaviomiranda.com.br)
-📺 [YouTube @OtavioMiranda](https://www.youtube.com/@OtavioMiranda)
+Created by [Luiz Otávio Miranda](https://www.otaviomiranda.com.br) \
+📺 [YouTube @OtavioMiranda](https://www.youtube.com/@otaviomiranda) \
 🐙 [GitHub @luizomf](https://github.com/luizomf)
 
 ---
